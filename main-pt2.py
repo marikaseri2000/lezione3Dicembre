@@ -3,7 +3,7 @@ import sys
 
 #print("Hllo, Quizzettone!")
 
-def mostra_menu(domanda:str)-> None:
+def mostra_menu(domanda:str) -> None:
     """
     Questa funzione restituisce la domanda e le opzioni della risposta
     """
@@ -29,7 +29,7 @@ def valida_scelta(scelta: str)->bool:
         return False
 
 def is_risposta_esatta(scelta: str, risposta_esatta: str) -> bool:
-    if scelta.upper() == "A":
+    if scelta.upper() == risposta_esatta:
         return True
     else:
         return False
@@ -40,12 +40,12 @@ def genera_feedback(is_corretta: bool) -> str:
     Questa funzione viene eseguita solo se la funzione restitusce True. 
     """
     if is_corretta == True:
-        return "Hai indovinato!"
+        return "             Hai indovinato!"
     else:
         return "Non hai indovinato. Ritenta!"
 
 def mostra_feedback(messaggio:str)->None:
-    simbol: str = "*"*30
+    simbol: str = "*"*40
     print (f"""
           {simbol}
           {messaggio}
@@ -71,7 +71,7 @@ def leggi_file(file_path:str)-> str:
         #print("------------------")
         #print(answer)
 
-def estrai_index(content:str)-> int:
+def estrai_index(content: str)-> int:
     """
     Questa funzione estrae l'indice di separazione tra domanda e risposta
     """
@@ -87,10 +87,9 @@ def estrai_risposta(content:str, index: int)-> str:
     """
     Questa funzione estrae le risposte dal file
     """
-    answer: str= content[index+1:]
     return content [index+1:]
 
-def estrai_liste_domanda(file_path:str) -> list[str]:
+def estrai_lista_domande(file_path:str) -> list[str]:
     lista_domande:list[str] = []
     with open(file_path, "r") as f:
         for i in f:
@@ -98,25 +97,89 @@ def estrai_liste_domanda(file_path:str) -> list[str]:
             lista_domande.append(i.strip())
     return lista_domande
 
+def genera_statistiche(risultato_finale: list[dict [str, str | bool]]) -> dict[str, int]:
+    statistica: dict[str, int]={}
+
+    risposte_esatte:int=0
+    risposte_non_esatte:int=0
+
+    for i in risultato_finale:
+        if i["risposta_corretta"]:
+            risposte_esatte += 1
+        else:
+            risposte_non_esatte += 1
+        
+    statistica["risposte_esatte"]  = risposte_esatte
+    statistica["risposte_non_esatte"]  = risposte_non_esatte    
+    return statistica
+
 def main():
-    domande_list:list[str]=[]
-    qa: dict[str, str] = {
-        "domanda" : None,
-        "risposta" : None
-    }
+    lista_domande:list[str]=[]
+    risultato_finale:list[dict[str,str|bool]]=[]
+    domanda_e_risposta: dict[str, str] = {"domanda" : None,"risposta" : None}
+    lista_domande= estrai_lista_domande("domande.txt")
+    counter_domanda_corrente:int=0
+    lista_domande_lenght:int=len(lista_domande)
+    #counter=len(domande_list)
 
-    counter:int=0
+    while counter_domanda_corrente < lista_domande_lenght:
+        content: str = leggi_file(f"domande_risposte/{lista_domande[counter_domanda_corrente]}")
+        index:int=estrai_index(content)
+        domanda_e_risposta["domanda"] = estrai_domanda(content,index)
+        domanda_e_risposta["risposta"] = estrai_risposta(content, index)
+        
+        print (f"Domanda {counter_domanda_corrente+1} di {lista_domande_lenght}")
+        print ("-"*30)
 
-    domande_list = estrai_liste_domanda("domande.txt")
-    #lunghezza domande
-    counter=len(domande_list)
-    #print(f"domande:{counter}")
+        mostra_menu(domanda_e_risposta["domanda"])
+        risposta_utente:str= raccogli_risposta()
+        is_risposta_valid: bool = valida_scelta(risposta_utente)
+
+        feedback:str = ""
+
+        if is_risposta_valid:
+            risultato: dict[str, str|bool]={}
+            is_risposta_corretta : bool= is_risposta_esatta(risposta_utente, domanda_e_risposta["risposta"])
+            feedback=genera_feedback(is_risposta_corretta)
+            risultato["domanda"] = lista_domande[counter_domanda_corrente]
+            risultato["risposta_corretta"] = is_risposta_corretta
+            risultato_finale.append(risultato)
+            
+        else:
+            feedback="Inserisci solo la rispostra tra le opzioni."
+
+        mostra_feedback(feedback)
+        
+        Possibility:str = input("Digita P per andare alla domanda precedente, altrimenti premi un altro carattere:").upper()
+        
+        if Possibility == "P":
+            #Torna indietro
+            if counter_domanda_corrente > 0:
+                counter_domanda_corrente -= 1
+            else:
+                print("Sei già alla prima domanda, non puoi andare ulteriormente indietro.")
+        else:
+            #Va avanti
+            if counter_domanda_corrente == lista_domande_lenght-1:
+                print("Hai terminato le tue domande a disposizione.")
+                break
+            else:
+                #aggiorno il contatore di andare alla domada successiva
+                counter_domanda_corrente += 1
+                print("Prosegui alla domanda Successiva.")
+            
+    print(risultato_finale)  
+    statistiche:dict[str, int]=genera_statistiche(risultato_finale)
+    print(statistiche["risposte_esatte"])
+    print(statistiche["risposte_non_esatte"])
 
 
+    """
     for q in range(counter):
     #with open(domande_list[0],"r") as f:
     #    for i in f:
     #        print(i)
+        risultato: dict[str, str|bool]={}
         content: str = leggi_file(f"domande_risposte/{domande_list[q]}")
         index: int = estrai_index(content)
         qa["domanda"] = estrai_domanda(content,index)
@@ -124,18 +187,28 @@ def main():
         mostra_menu(qa["domanda"])
         answer:str=raccogli_risposta()
         is_risposta_valid:bool = valida_scelta(answer)
+        
+        feedback: str = ""
 
         if is_risposta_valid == True:
             is_risposta_corretta : bool= is_risposta_esatta(answer, qa["risposta"])
             feedback=genera_feedback(is_risposta_corretta)
+            risultato["domanda"] = domande_list[q]
+            risultato["risposta_corretta"] = is_risposta_corretta
         else:
             feedback="Inserisci solo la rispo tra le opzioni"
 
         print(feedback)
+
+    statistiche=genera_statistiche(risultato_finale)
+    print(statistiche["risposte_esatte"])
+    print(statistiche["risposte_non_esatte"])
+
+
     #print(domande_list)
             # print(i.strip()) 
             #lo strip mi toglie gli spazi tra i tue .txt
 
 
-
+    """
 main()
