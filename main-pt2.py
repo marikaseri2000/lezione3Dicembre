@@ -56,8 +56,8 @@ def leggi_file(file_path:str)-> str:
     """
     Questa funzione si occupa di leggere il file delle domande e risposte
     """
-    with open("file_path", "r") as file:
-        content: str = file.read()
+    with open(file_path, "r") as file:
+        content = file.read()
         return content    
 
         #question = content[0:85]
@@ -83,33 +83,37 @@ def estrai_domanda(content:str, index:int)-> str:
     """
     return content [0:index]
 
-def estrai_risposte(content:str, index: int)-> str:
+def estrai_risposta(content:str, index: int)-> str:
     """
     Questa funzione estrae le risposte dal file
     """
     answer: str= content[index+1:]
     return content [index+1:]
 
+def estrai_liste_domanda(file_path:str) -> list[str]:
+    lista_domande:list[str] = []
+    with open(file_path, "r") as f:
+        for i in f:
+            #print(i)
+            lista_domande.append(i.strip())
+    return lista_domande
+
 def main():
     domande_list:list[str]=[]
     qa: dict[str, str] = {
         "domanda" : None,
-        "Risposta" : None
+        "risposta" : None
     }
 
-    with open("domande.txt", "r") as f:
-        for i in f:
-            #print(i)
-            domande_list.append(i.strip())
-
+    domande_list = estrai_liste_domanda("domande.txt")
+    
     #with open(domande_list[0],"r") as f:
     #    for i in f:
     #        print(i)
-
     content: str = leggi_file(f"domande_risposte/{domande_list[1]}")
     index: int = estrai_index(content)
-    qa["domanda"]=estrai_domanda(content,index)
-    qa["risposta"]=estrai_risposte(content, index)
+    qa["domanda"] = estrai_domanda(content,index)
+    qa["risposta"] = estrai_risposta(content, index)
 
     print(qa)
     
