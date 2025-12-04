@@ -124,7 +124,14 @@ def main():
         mostra_menu(qa["domanda"])
         answer:str=raccogli_risposta()
         is_risposta_valid:bool = valida_scelta(answer)
-        
+
+        if is_risposta_valid == True:
+            is_risposta_corretta : bool= is_risposta_esatta(answer, qa["risposta"])
+            feedback=genera_feedback(is_risposta_corretta)
+        else:
+            feedback="Inserisci solo la rispo tra le opzioni"
+
+        print(feedback)
     #print(domande_list)
             # print(i.strip()) 
             #lo strip mi toglie gli spazi tra i tue .txt
