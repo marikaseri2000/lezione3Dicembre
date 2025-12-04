@@ -4,7 +4,11 @@ prodotti: list[str: dict [str, str | int]]= [
     {"nome" : "Tastiera" , "prezzo" : 75.00, "quantità" : 30},
     {"nome" : "Monitor" , "prezzo" : 299.99, "quantità" : 15}]
 
+inventario:float=0
+
 #OCCHIO qui devi tener conto che parli di x quindi il valore della chiave "prezzo"
 for x in prodotti:
-    if x["prezzo"]>100:
-        print(x)
+    inventario += x["prezzo"]*x["quantità"]
+    print(x["prezzo"]) if x["prezzo"]>100 else None
+
+print(inventario)
