@@ -105,21 +105,30 @@ def main():
         "risposta" : None
     }
 
+    counter:int=0
+
     domande_list = estrai_liste_domanda("domande.txt")
-    
+    #lunghezza domande
+    counter=len(domande_list)
+    #print(f"domande:{counter}")
+
+
+    for q in range(counter):
     #with open(domande_list[0],"r") as f:
     #    for i in f:
     #        print(i)
-    content: str = leggi_file(f"domande_risposte/{domande_list[1]}")
-    index: int = estrai_index(content)
-    qa["domanda"] = estrai_domanda(content,index)
-    qa["risposta"] = estrai_risposta(content, index)
-
-    print(qa)
-    
+        content: str = leggi_file(f"domande_risposte/{domande_list[q]}")
+        index: int = estrai_index(content)
+        qa["domanda"] = estrai_domanda(content,index)
+        qa["risposta"] = estrai_risposta(content, index)
+        mostra_menu(qa["domanda"])
+        answer:str=raccogli_risposta()
+        is_risposta_valid:bool = valida_scelta(answer)
+        
     #print(domande_list)
             # print(i.strip()) 
             #lo strip mi toglie gli spazi tra i tue .txt
+
 
 
 main()
