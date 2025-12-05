@@ -1,6 +1,6 @@
 #import operazioni
 #from operazioni import moltiplica
-#import matematica as pippo
+import matematica as pippo
 from matematica import moltiplica, sommatoria
 
 if __name__ == "__main__":

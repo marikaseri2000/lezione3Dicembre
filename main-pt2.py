@@ -1,14 +1,12 @@
 import sys
+from repository_layer import get_questions_from_file
+from frontend_layer import mostra_feedback, mostra_menu
 
-
-#print("Hllo, Quizzettone!")
-
+"""
 def mostra_menu(domanda:str) -> None:
-    """
-    Questa funzione restituisce la domanda e le opzioni della risposta
-    """
+    #Questa funzione restituisce la domanda e le opzioni della risposta
     print(domanda)
-
+"""
 def raccogli_risposta() -> str: 
     """
     Questa funzione si occupa solamente di prendere l'input dell'utente.
@@ -43,7 +41,7 @@ def genera_feedback(is_corretta: bool) -> str:
         return "             Hai indovinato!"
     else:
         return "Non hai indovinato. Ritenta!"
-
+"""
 def mostra_feedback(messaggio:str)->None:
     simbol: str = "*"*40
     print (f"""
@@ -51,15 +49,21 @@ def mostra_feedback(messaggio:str)->None:
           {messaggio}
           {simbol}
           """)
-
+"""
 def leggi_file(file_path:str)-> str:
     """
     Questa funzione si occupa di leggere il file delle domande e risposte
     """
-    with open(file_path, "r") as file:
+    """
+    #with open(file_path, "r") as file:
+    #    content = file.read()
+    #    return content    
+    """
+    #------DOPO AVER MESSO LA REPOSITORY-----
+    with get_questions_from_file(file_path) as file:
         content = file.read()
-        return content    
-
+        return content 
+    """
         #question = content[0:85]
         ##answer=content[86:]
         #ci da la lunghezza di tutti i caratteri
@@ -70,7 +74,7 @@ def leggi_file(file_path:str)-> str:
         #print(question)
         #print("------------------")
         #print(answer)
-
+    """
 def estrai_index(content: str)-> int:
     """
     Questa funzione estrae l'indice di separazione tra domanda e risposta
@@ -88,14 +92,22 @@ def estrai_risposta(content:str, index: int)-> str:
     Questa funzione estrae le risposte dal file
     """
     return content [index+1:]
-
+"""
 def estrai_lista_domande(file_path:str) -> list[str]:
     lista_domande:list[str] = []
+    with get_questions_from_file(file_path) as f:
+        for i in f:
+            #print(i)
+            lista_domande.append(i.strip())
+    return lista_domande
+   """ 
+    """
     with open(file_path, "r") as f:
         for i in f:
             #print(i)
             lista_domande.append(i.strip())
     return lista_domande
+    """ 
 
 def genera_statistiche(risultato_finale: list[dict [str, str | bool]]) -> dict[str, int]:
     statistica: dict[str, int]={}
@@ -125,7 +137,7 @@ def main():
     while counter_domanda_corrente < lista_domande_lenght:
         content: str = leggi_file(f"domande_risposte/{lista_domande[counter_domanda_corrente]}")
         index:int=estrai_index(content)
-        domanda_e_risposta["domanda"] = estrai_domanda(content,index)
+        domanda_e_risposta["domanda"] = get_questions_from_file(content,index)
         domanda_e_risposta["risposta"] = estrai_risposta(content, index)
         
         #Restituisce l'indice della domanda corrente +1 per l'utente
@@ -184,7 +196,6 @@ def main():
 
     print(statistiche["risposte_esatte"])
     print(statistiche["risposte_non_esatte"])
-
 
     """
     for q in range(counter):
