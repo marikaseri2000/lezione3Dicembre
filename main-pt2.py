@@ -144,8 +144,14 @@ def main():
             feedback=genera_feedback(is_risposta_corretta)
             risultato["domanda"] = lista_domande[counter_domanda_corrente]
             risultato["risposta_corretta"] = is_risposta_corretta
-            risultato_finale.append(risultato)
             
+            #LIVELLO 3 
+            risultato_finale_len=len(risultato_finale)
+            if counter_domanda_corrente < risultato_finale_len:
+                risultato_finale[counter_domanda_corrente]=risultato
+            else:
+                risultato_finale.append(risultato)
+                        
         else:
             feedback="Inserisci solo la rispostra tra le opzioni."
 
