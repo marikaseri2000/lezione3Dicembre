@@ -128,6 +128,7 @@ def main():
         domanda_e_risposta["domanda"] = estrai_domanda(content,index)
         domanda_e_risposta["risposta"] = estrai_risposta(content, index)
         
+        #Restituisce l'indice della domanda corrente +1 per l'utente
         print (f"Domanda {counter_domanda_corrente+1} di {lista_domande_lenght}")
         print ("-"*30)
 
@@ -170,6 +171,11 @@ def main():
             
     print(risultato_finale)  
     statistiche:dict[str, int]=genera_statistiche(risultato_finale)
+
+    print("*"*30)    
+    print("Gioco terminato. Ecco i risultati.")
+    print("*"*30)
+
     print(statistiche["risposte_esatte"])
     print(statistiche["risposte_non_esatte"])
 
