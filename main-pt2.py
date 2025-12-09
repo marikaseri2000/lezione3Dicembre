@@ -1,53 +1,37 @@
 import sys
 from data.services import (
-    leggi_file, 
+    get_domanda,
+    get_lista_domande,
+    estrai_domanda,
+    estrai_index,
+    estrai_risposta, 
     valida_scelta, 
     is_risposta_esatta, 
-    get_numero_domanda_corrente, 
-    get_counter_aggiornato,
     genera_statistiche,
     calcola_percentuale,
-    verifica_superamento,
-    recupera_dati_domanda,
-    aggiorna_lista_risultati
+    verifica_superamento
 )
 from ui.console import (
     mostra_feedback, 
     mostra_menu, 
     genera_feedback, 
-    raccogli_risposta,
-    mostra_risultati_finali,
-    gestisci_menu_fine_gioco
+    raccogli_risposta
     )
 
-def leggi_file(file_path:str)-> str:
-    """
-    Questa funzione si occupa di leggere il file delle domande e risposte
-    """
-    """
-    #with open(file_path, "r") as file:
-    #    content = file.read()
-    #    return content    
-    """
-    #------DOPO AVER MESSO LA REPOSITORY-----
-    with get_questions_from_file(file_path) as file:
-        content = file.read()
-        return content 
-    
 
 def main():
     lista_domande:list[str]=[]
     risultato_finale:list[dict[str,str|bool]]=[]
     domanda_e_risposta: dict[str, str] = {"domanda" : None,"risposta" : None}
-    lista_domande= estrai_lista_domande("domande.txt")
+    lista_domande= get_lista_domande("domande.txt")
     counter_domanda_corrente:int=0
     lista_domande_lenght:int=len(lista_domande)
     #counter=len(domande_list)
 
     while counter_domanda_corrente < lista_domande_lenght:
-        content: str = leggi_file(f"domande_risposte/{lista_domande[counter_domanda_corrente]}")
+        content: str = get_lista_domande(f"domande_risposte/{lista_domande[counter_domanda_corrente]}")
         index:int=estrai_index(content)
-        domanda_e_risposta["domanda"] = get_questions_from_file(content,index)
+        domanda_e_risposta["domanda"] = get_domanda(content,index)
         domanda_e_risposta["risposta"] = estrai_risposta(content, index)
         
         #Restituisce l'indice della domanda corrente +1 per l'utente
@@ -112,7 +96,7 @@ def main():
     perc=calcola_percentuale(esatte, totale_domande_fatte)
     is_superato = verifica_superamento(perc)
     
-    mostra_risultati_finali(esatte, errate, totale_domande_fatte, perc, is_superato)
+    print(esatte, errate, totale_domande_fatte, perc, is_superato)
 
 
     """
@@ -152,7 +136,8 @@ def main():
 
 
     """
+
 if __name__=="__main__":
-main()
+    main()
 
 
