@@ -1,8 +1,6 @@
-#import the submodules
-from repository import (
-    get_lista_domande_e_risposte
-)
-
+# Import the submodules
+from . import repository
 from . import services
 
-__all__=["get_lista_domande_e_risposte", "valida_scelta", "services"]
+# Define the __all__ variable
+__all__ = ["repository", "services"]
